@@ -173,8 +173,13 @@ const editReview = ({ reviewId, content }) => {
 const getNestedReviews = (reviewId) => {
   return apiClient.get(`/review/get-nested-review/${reviewId}`);
 };
+
+const forgotPassword = ({ email }) => {
+  return apiClient.post("/users/forgot-password", { email });
+};
 export {
   adminGetALlUser,
+  forgotPassword,
   getNestedReviews,
   fetchReview,
   postReview,
