@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getSingleBook } from "../config/AxiosInstance"; // Make sure to have this configured
+import { getSingleBook } from "../config/AxiosInstance";
 import toast from "react-hot-toast";
 import ReviewList from "../components/ReviewList";
 
 const BookDetailsPage = () => {
   const { bookId } = useParams();
   const [book, setBook] = useState(null);
-  const [showDescription, setShowDescription] = useState(false); // State to toggle description visibility
+  const [showDescription, setShowDescription] = useState(false);
 
   const getBook = async () => {
     const { data } = await getSingleBook(bookId);
@@ -30,6 +30,7 @@ const BookDetailsPage = () => {
   const toggleDescription = () => {
     setShowDescription((prev) => !prev);
   };
+  console.log(book);
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -39,7 +40,7 @@ const BookDetailsPage = () => {
             <img
               src={book.coverImage}
               alt={book.title}
-              className="rounded-lg shadow-md w-full" // Full width image
+              className="rounded-lg shadow-md w-full"
             />
           </div>
           <div className="md:w-2/3 md:pl-6">
@@ -58,9 +59,11 @@ const BookDetailsPage = () => {
               {book.availability ? "Available" : "Not Available"}
             </p>
             <div className="mt-4">
-              <p className="text-gray-700">
+              <p className="text-gray-700 capitalize">
                 Borrowed By:{" "}
-                {book.borrowedBy ? book.borrowedBy.username : "No one"}
+                {book.borrowedUserDetails
+                  ? book.borrowedUserDetails.username
+                  : "No one"}
               </p>
               <p className="text-gray-500">
                 Due Date: {new Date(book.dueDate).toLocaleDateString()}

@@ -6,7 +6,6 @@ import toast from "react-hot-toast";
 const OtherUserProfile = () => {
   const { userId } = useParams();
   const [userdata, setUserData] = useState({});
-
   const fetchUserData = async () => {
     try {
       const { data } = await getOtherUser(userId);
@@ -54,13 +53,13 @@ const OtherUserProfile = () => {
         </div>
 
         {/* Book Details Section */}
-        {userdata?.borrowedBooks?.length > 0 && (
+        {userdata?.borrowedBooksByUser?.length > 0 && (
           <div>
             <h3 className="text-2xl font-semibold text-gray-700 mb-4">
               Borrowed Books
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6">
-              {userdata?.borrowedBooks.map((book) => (
+              {userdata?.borrowedBooksByUser.map((book) => (
                 <div
                   key={book._id}
                   className="flex bg-gray-50 rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
@@ -110,7 +109,7 @@ const OtherUserProfile = () => {
         )}
 
         {/* No Books Borrowed */}
-        {userdata?.borrowedBooks?.length === 0 && (
+        {userdata?.borrowedBooksByUser?.length === 0 && (
           <p className="text-lg text-gray-600 text-center mt-6">
             No books borrowed.
           </p>

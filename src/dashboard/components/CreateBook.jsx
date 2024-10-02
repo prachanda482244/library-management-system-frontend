@@ -31,11 +31,10 @@ const CreateBook = () => {
     formData.append("description", values.description);
     formData.append("avatar", values.avatar);
 
-
     const { data } = await createBook(formData);
 
     console.log(data);
-    if (data.statusCode === 201) {
+    if (data.statusCode === 200) {
       navigate("/dashboard/books");
       resetForm();
       setImagePreview(null);

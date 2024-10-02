@@ -5,6 +5,7 @@ import { editBook, getSingleBook } from "../../config/AxiosInstance";
 import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { bookValidationSchema } from "../../constants/constants";
+import FormikTextarea from "../../formik/FormikTextArea";
 
 const EditBook = () => {
   const { id } = useParams();
@@ -32,6 +33,7 @@ const EditBook = () => {
     genre: book.genre || "",
     publicationYear: book.publicationYear || 0,
     isbn: book.isbn || 0,
+    description: book?.description || "",
     // availability: book.availability || "true",
   };
 
@@ -94,6 +96,11 @@ const EditBook = () => {
                     required={true}
                     name="publicationYear"
                     className="rounded-lg border-gray-300 shadow-sm"
+                  />
+                  <FormikTextarea
+                    label="Description"
+                    name="description"
+                    required={true}
                   />
                   <FormikInput
                     type="number"

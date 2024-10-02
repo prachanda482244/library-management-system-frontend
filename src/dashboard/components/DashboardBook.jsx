@@ -90,7 +90,10 @@ const DashboardBook = () => {
               key={book._id}
               className="relative border border-gray-200 rounded-lg overflow-hidden shadow-lg bg-white transition hover:shadow-xl"
             >
-              <Link to="/dashboard/books/setting" className="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-100">
+              <Link
+                to="/dashboard/books/setting"
+                className="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-100"
+              >
                 <FiSettings className="text-gray-600" />
               </Link>
               {book.coverImage && (

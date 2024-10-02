@@ -25,6 +25,7 @@ const Profile = () => {
     newPassword: "",
   });
 
+  console.log(userProfile);
   const getUserProfile = async () => {
     try {
       const { data } = await getCurrentUser();
@@ -54,11 +55,15 @@ const Profile = () => {
   };
 
   const handleReturnBook = async (id) => {
+    console.log(id);
     try {
       const { data } = await returnBook(id);
-      await getUserProfile(); // Fetch the user profile again after returning a book
-      toast.success(data.message);
-      dispatch(fetchCurrentUser());
+      console.log(data);
+      if (data.statusCode === 200) {
+        await getUserProfile();
+        toast.success(data.message);
+        dispatch(fetchCurrentUser());
+      }
     } catch (error) {
       console.error("Error returning book:", error);
       toast.error("Failed to return book.");
@@ -82,19 +87,17 @@ const Profile = () => {
 
   useEffect(() => {
     getUserProfile();
-    // No dependency array means this runs on every render.
-    return () => {
-      // Optional: Cleanup logic if needed, like aborting requests.
-    };
-  }, []); // Empty dependency array ensures it runs only once on mount
+    return () => {};
+  }, []);
 
   useEffect(() => {
-    fetchRecommendations(); // Fetch recommendations whenever userProfile changes
+    fetchRecommendations();
   }, [userProfile]);
 
   if (!userProfile) return <div>Loading...</div>;
 
-  const { username, email, avatar, role, borrowedBooks, fines } = userProfile;
+  const { username, email, avatar, role, bookBorrowedByUser, fines } =
+    userProfile;
 
   return (
     <div className="container mx-auto p-6">
@@ -133,8 +136,8 @@ const Profile = () => {
       <div className="bg-white shadow-lg rounded-lg p-6">
         <h2 className="text-2xl font-semibold mb-6">Borrowed Books</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {borrowedBooks.length > 0 ? (
-            borrowedBooks.map((book) => (
+          {bookBorrowedByUser.length > 0 ? (
+            bookBorrowedByUser.map((book) => (
               <div
                 key={book.isbn}
                 className="bg-gray-100 p-4 rounded-lg shadow-md flex flex-col md:flex-row"

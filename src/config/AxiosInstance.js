@@ -134,12 +134,12 @@ const createBook = (data) => {
 const searchQuery = (params) => {
   return apiClient.get("/search/query", { params });
 };
-const getCategory = (params) => {
+const getCategory = () => {
   return apiClient.get("/search/get-category");
 };
 
 const editBook = (id, data) => {
-  return apiClient.patch(`/books/update-book/${id}`, { data });
+  return apiClient.patch(`/books/update-book/${id}`, data);
 };
 const getAdminStatictics = () => {
   return apiClient.get("/admin/get-statistics");

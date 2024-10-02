@@ -23,6 +23,7 @@ import { useEffect } from "react";
 import BookDetailsPage from "./pages/BookDetailsPage";
 import Booksettings from "./pages/Booksettings";
 import Footer from "./components/Footer";
+import ForgotPassword from "./pages/ForgotPassword";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -47,6 +48,7 @@ const App = () => {
         <Route path="/sign-in" element={<Login />} />
         <Route path="/sign-up" element={<RegisterForm />} />
         <Route path="/search" element={<AdvancedSearchPage />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
         <Route element={<ProtectedRoutes />}>
           <Route path="/profile" element={<Profile />} />

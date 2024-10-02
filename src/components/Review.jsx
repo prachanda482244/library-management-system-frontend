@@ -11,16 +11,19 @@ import { motion } from "framer-motion";
 import toast from "react-hot-toast";
 
 const Review = ({ reviews, bookId }) => {
-  console.log(reviews);
   const [allReviews, setAllReviews] = useState(reviews);
   const [nestedReview, setNestedReview] = useState({});
   const [replyContent, setReplyContent] = useState({});
+
   const [editMode, setEditMode] = useState({
     active: false,
     reviewId: null,
     content: "",
   });
   const { userData } = useSelector((state) => state.user);
+  useEffect(() => {
+    setAllReviews(reviews);
+  }, [reviews]);
 
   const fetchNestedReviews = async (reviewId, forceFetch = false) => {
     if (!nestedReview[reviewId] || forceFetch) {
@@ -55,6 +58,7 @@ const Review = ({ reviews, bookId }) => {
         parentReviewId,
       });
       if (data?.data) {
+        setAllReviews(reviews);
         setReplyContent((prev) => ({
           ...prev,
           [parentReviewId]: "",
@@ -136,9 +140,6 @@ const Review = ({ reviews, bookId }) => {
     if (hours > 0) return `${hours}h`;
     return `${minutes}m`;
   };
-  useEffect(() => {
-    setAllReviews(allReviews);
-  }, [allReviews]);
 
   return (
     <div className="p-4 bg-gray-100 rounded-lg shadow-md">
