@@ -15,6 +15,7 @@ const CreateBook = () => {
     title: "",
     author: "",
     genre: "",
+    price:0,
     publicationYear: 0,
     isbn: 0,
     description: "",
@@ -30,7 +31,7 @@ const CreateBook = () => {
     formData.append("isbn", parseInt(values.isbn));
     formData.append("description", values.description);
     formData.append("avatar", values.avatar);
-
+formData.append("price",values.price)
     const { data } = await createBook(formData);
 
     console.log(data);
@@ -74,6 +75,12 @@ const CreateBook = () => {
                   label="Genre"
                   required={true}
                   name="genre"
+                />
+                <FormikInput
+                  type="number"
+                  label="Price"
+                  required={true}
+                  name="price"
                 />
                 <FormikInput
                   type="number"

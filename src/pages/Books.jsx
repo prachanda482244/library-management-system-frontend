@@ -6,15 +6,18 @@ import { fetchCurrentUser } from "../store/slices/authSlice";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { HiEye } from "react-icons/hi"; // Import the eye icon from react-icons
+import { addToCart } from "../store/slices/cartSlice";
 
 const Books = () => {
   const { userData } = useSelector((state) => state.user);
+
   const dispatch = useDispatch();
   const [books, setBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [refresh, setRefresh] = useState(false);
   const [loadingBookId, setLoadingBookId] = useState(null);
 
+  
   const formatDueDate = (dueDate) => {
     const date = new Date(dueDate);
     return date.toLocaleDateString();
@@ -36,6 +39,12 @@ const Books = () => {
     };
     fetchBooks();
   }, [refresh]);
+
+
+  const handleAddToCart = (book) => {
+    dispatch(addToCart(book._id));
+    toast.success("Book added to cart");
+  };
 
   const handleBorrowBook = async (bookId) => {
     setLoadingBookId(bookId);
@@ -127,13 +136,16 @@ const Books = () => {
                   </Link>
                 </div>
               )}
-              <h2 className="text-lg font-semibold text-gray-900 truncate">
+              <h2 className="text-lg font-semibold text-gray-900 flex items-center justify-between truncate">
                 {book.title}
+              
               </h2>
               <p className="text-gray-600 mb-2">
-                {book.author ? `Author: ${book.author}` : "No Author"}
+                {book.author ? `Author: ${book.author}` : "No Author"} 
               </p>
-
+                <p className="text-gray-600 mb-2">
+                  Rs:{book.price? book.price :'0'}
+                </p>
               {/* Borrowed by User */}
               {book.borrowedUserDetails ? (
                 <div className="text-sm text-gray-700 mb-4">
@@ -156,7 +168,7 @@ const Books = () => {
                   Currently unavailable
                 </p>
               )}
-
+ 
               {/* Borrow Button or Unavailable Text */}
               {book.availability ? (
                 <button
@@ -172,15 +184,31 @@ const Books = () => {
                     ? "Loading..."
                     : "Borrow this Book"}
                 </button>
-              ) : !isBookBorrowedByUser(book._id) ? (
+              ) : !isBookBorrowedByUser(book._id)  ? (
                 <p className="text-red-500 font-medium text-center">
                   Available at: {formatDueDate(book.dueDate)}
                 </p>
               ) : (
                 <p className="text-blue-500 font-medium text-center">
-                  You borrowed this book.
+                  You requested for this book.
                 </p>
-              )}
+              ) ? book.borrowApprovalStatus ==="pending" ?
+              <p className="text-yellow-500">
+                You requested for this book
+              </p>
+              :
+              <p className="text-green-500">
+
+                You borrowed this book
+              </p>
+              : null
+              }
+                <button
+                className="border mt-2 w-full capitalize border-purple-900  hover:bg-purple-900 hover:text-white text-black text-sm px-2 py-1 rounded-md"
+                onClick={() => handleAddToCart(book)}
+              >
+                add to cart
+              </button>
             </div>
           ))
         ) : (

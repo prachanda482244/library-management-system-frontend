@@ -4,10 +4,12 @@ import storage from "redux-persist/lib/storage";
 import authSlice from "./slices/authSlice";
 import searchSlice from "./slices/searchSlice";
 import socketSlice from "./slices/socketSlice";
+import cartSlice from "./slices/cartSlice";
 
 
 const rootReducer = combineReducers({
     user: authSlice,
+    cart: cartSlice,
     search: searchSlice,
     socket: socketSlice,
 });

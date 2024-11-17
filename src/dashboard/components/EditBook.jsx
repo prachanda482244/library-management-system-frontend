@@ -31,6 +31,7 @@ const EditBook = () => {
     title: book.title || "",
     author: book.author || "",
     genre: book.genre || "",
+    price:book?.price || 0,
     publicationYear: book.publicationYear || 0,
     isbn: book.isbn || 0,
     description: book?.description || "",
@@ -39,6 +40,7 @@ const EditBook = () => {
 
   const formSubmit = async (values) => {
     try {
+      console.log(values,"VALUES")
       const { data } = await editBook(id, values);
       console.log(data);
       if (data.statusCode === 200) {
@@ -90,6 +92,15 @@ const EditBook = () => {
                     name="genre"
                     className="rounded-lg border-gray-300 shadow-sm"
                   />
+
+                  <FormikInput
+                    type="number"
+                    label="Price"
+                    required={true}
+                    name="price"
+                    className="rounded-lg border-gray-300 shadow-sm"
+                  />
+
                   <FormikInput
                     type="number"
                     label="Publication Year"

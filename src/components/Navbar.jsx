@@ -7,6 +7,7 @@ import { logoutUser } from "../store/slices/authSlice";
 import toast from "react-hot-toast";
 import { AiOutlineBell } from "react-icons/ai";
 import io from "socket.io-client";
+import { fetchCartData } from "../store/slices/cartSlice";
 
 const socket = io(import.meta.env.VITE_SOCKET_URL);
 
@@ -17,6 +18,8 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [notifications, setNotifications] = useState([]);
   const user = useSelector((state) => state.user);
+  const { cartItems, status } = useSelector((state) => state.cart);
+
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const dispatch = useDispatch();
@@ -78,6 +81,7 @@ const Navbar = () => {
     }
   }, [user]);
 
+
   const profileDropdownOptions = [
     { name: "Profile", path: "/profile" },
     { name: "Logout", logoutFunction: handleLogout },
@@ -93,6 +97,10 @@ const Navbar = () => {
     }
   };
 
+  useEffect(() => {
+    dispatch(fetchCartData());
+  }, [status]);
+  
   return (
     <nav className="bg-white shadow">
       <div className="container mx-auto px-6 py-3 flex justify-between items-center">

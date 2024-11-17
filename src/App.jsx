@@ -24,6 +24,11 @@ import BookDetailsPage from "./pages/BookDetailsPage";
 import Booksettings from "./pages/Booksettings";
 import Footer from "./components/Footer";
 import ForgotPassword from "./pages/ForgotPassword";
+import GetRequestApproval from "./dashboard/components/GetRequestApproval";
+import Cart from "./pages/Cart";
+import Order from "./pages/Order";
+import DashboardOrder from "./dashboard/components/DashboardOrder";
+import DashboardOrderDetails from "./dashboard/components/DashBoardOrderDetails";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -51,14 +56,19 @@ const App = () => {
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
         <Route element={<ProtectedRoutes />}>
+          <Route path="/cart" element={<Cart />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/order" element={<Order />}/>
           <Route path="/chat" element={<Chat />} />
           <Route path="/profile/:userId" element={<OtherUserProfile />} />
           <Route path="/books" element={<Books />} />
           <Route path="/books/read/:bookId" element={<BookDetailsPage />} />
           <Route path="/dashboard" element={<Dashboard />}>
             <Route path="charts" element={<Chart />} />
+            <Route path="order" element={<DashboardOrder />} />
+            <Route path="order/:id" element={<DashboardOrderDetails />} />
             <Route path="customers" element={<DashboardUser />} />
+            <Route path="request-approval" element={<GetRequestApproval />} />
             <Route path="books" element={<DashboardBook />} />
             <Route path="book/create" element={<CreateBook />} />
             <Route path="books/setting" element={<Booksettings />} />

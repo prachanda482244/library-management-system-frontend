@@ -121,6 +121,41 @@ const adminDeleteBook = (id) => {
   return apiClient.delete(`/books/delete-book/${id}`);
 };
 
+const requestApproval = ({bookId,status}) => {
+  return apiClient.put("/admin/request-approval/", {
+    bookId,
+    status
+  });
+};
+
+const fetchBookCart = ()=>{
+  return apiClient.get("/cart")
+}
+
+const addBookToCart = ({bookId,book})=>{
+  return apiClient.post(
+    `/cart/add-to-cart/${bookId}`,
+    { book, quantity: 1 },
+    { withCredentials: true }
+  );
+}
+
+const removeBookFromCart = ({bookId})=>{
+  return apiClient.delete(
+    `/cart/delete-cart/${bookId}`,
+    {}
+  )
+}
+
+const updateBookToCart = ({bookId,quantity})=>{
+  return apiClient.put(
+    `/cart/update-cart/${bookId}`,
+    { quantity: parseInt(quantity) },
+  );
+}
+const clearBookToCart = ()=>{
+  return apiClient.delete("/cart/clear-cart",{} );
+}
 const getSingleBook = (id) => {
   return apiClient.get(`/books/get-single-book/${id}`);
 };
@@ -131,6 +166,9 @@ const createBook = (data) => {
     },
   });
 };
+const allOrders= ()=>{
+  return apiClient.get("/order/get-all-order",{})
+}
 const searchQuery = (params) => {
   return apiClient.get("/search/query", { params });
 };
@@ -141,6 +179,10 @@ const getCategory = () => {
 const editBook = (id, data) => {
   return apiClient.patch(`/books/update-book/${id}`, data);
 };
+
+const createOrder = (order)=>{
+  return apiClient.post("/order/create-order",order)
+}
 const getAdminStatictics = () => {
   return apiClient.get("/admin/get-statistics");
 };
@@ -174,10 +216,24 @@ const getNestedReviews = (reviewId) => {
   return apiClient.get(`/review/get-nested-review/${reviewId}`);
 };
 
+const deleteOrder = (id)=>{
+  return apiClient.delete(`/order/delete-order/${id}`)
+}
 const forgotPassword = ({ email }) => {
   return apiClient.post("/users/forgot-password", { email });
 };
+const updateStatus=(id,status)=>{
+  return apiClient.patch(`/order/${id}/update-status`, {
+    status
+  });
+}
+const singleOrder = (id)=>{
+  return apiClient.get(`/order/get-single-order/${id}`)
+}
 export {
+  singleOrder,
+  updateStatus,
+  deleteOrder,
   adminGetALlUser,
   forgotPassword,
   getNestedReviews,
@@ -187,6 +243,12 @@ export {
   getSingleBook,
   getGenreBasedRecommendations,
   adminDeleteUser,
+  createOrder,
+addBookToCart,
+removeBookFromCart,
+updateBookToCart,
+clearBookToCart,
+fetchBookCart,
   editReview,
   deleteReview,
   adminUpdateRole,
@@ -207,7 +269,9 @@ export {
   getAvailableUsers,
   getChatMessages,
   getGroupInfo,
+  allOrders,
   updateUser,
+  requestApproval,
   getUserChats,
   loginUSER,
   logoutUSER,

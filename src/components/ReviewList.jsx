@@ -142,7 +142,7 @@ const ReviewList = ({ bookId }) => {
 
       {/* Section for user reviews */}
       <h2 className="text-lg font-semibold mb-2">
-        User Reviews ({totalReviews})
+        User Reviews ({reviews.length})
       </h2>
 
       {reviews.length > 0 ? (

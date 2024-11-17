@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  getCurrentUser,
-  returnBook,
-  updateUser,
-  getRecommendations,
-} from "../config/AxiosInstance";
+import { getCurrentUser, returnBook, getRecommendations } from "../config/AxiosInstance";
 import { FiEdit2, FiCheck, FiX } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
@@ -25,7 +20,6 @@ const Profile = () => {
     newPassword: "",
   });
 
-  console.log(userProfile);
   const getUserProfile = async () => {
     try {
       const { data } = await getCurrentUser();
@@ -45,7 +39,7 @@ const Profile = () => {
 
   const fetchRecommendations = async () => {
     try {
-      if (!userProfile) return; // Ensure userProfile is available before fetching recommendations
+      if (!userProfile) return; 
       const { data } = await getRecommendations(userProfile._id);
       setRecommendations(data.data);
     } catch (error) {
@@ -55,10 +49,8 @@ const Profile = () => {
   };
 
   const handleReturnBook = async (id) => {
-    console.log(id);
     try {
       const { data } = await returnBook(id);
-      console.log(data);
       if (data.statusCode === 200) {
         await getUserProfile();
         toast.success(data.message);
@@ -76,7 +68,7 @@ const Profile = () => {
         username: editData.username,
         newPassword: editData.newPassword,
       });
-      await getUserProfile(); // Refresh user profile
+      await getUserProfile();
       setIsEditing(false);
       toast.success("Profile updated successfully.");
     } catch (error) {
@@ -87,7 +79,6 @@ const Profile = () => {
 
   useEffect(() => {
     getUserProfile();
-    return () => {};
   }, []);
 
   useEffect(() => {
@@ -96,7 +87,7 @@ const Profile = () => {
 
   if (!userProfile) return <div>Loading...</div>;
 
-  const { username, email, avatar, role, bookBorrowedByUser, fines } =
+  const { username, email, avatar, role, bookBorrowedByUser, fines, orderDetails } =
     userProfile;
 
   return (
@@ -148,28 +139,50 @@ const Profile = () => {
                     alt={book.title}
                     className="w-32 h-48 object-cover rounded-lg shadow-md mb-4"
                   />
+                  {
+                    book.borrowApprovalStatus!=="rejected" ?
                   <button
+                    disabled={book.borrowApprovalStatus === "pending"}
                     onClick={() => handleReturnBook(book._id)}
-                    className="bg-red-500 text-white px-6 py-2 rounded-full shadow hover:bg-red-600 transition duration-300"
+                    className="bg-red-500 disabled:bg-red-300 text-white px-6 py-2 rounded-full shadow hover:bg-red-600 transition duration-300"
                   >
                     Return Book
                   </button>
+                  :null
+                  }
+
                 </div>
                 <div className="flex-grow md:ml-6">
                   <h3 className="text-xl font-semibold mb-2">{book.title}</h3>
                   <p className="text-gray-600">Author: {book.author}</p>
                   <p className="text-gray-600">Genre: {book.genre}</p>
+                  <p className="text-gray-600">Published: {book.publicationYear}</p>
                   <p className="text-gray-600">
-                    Published: {book.publicationYear}
+                    Status:{" "}
+                    <span
+                      className={`inline-block rounded-full px-3 py-1 text-xs font-semibold ${
+                        book.borrowApprovalStatus === "pending"
+                          ? "bg-yellow-200 text-yellow-800"
+                          : book.borrowApprovalStatus === "approved"
+                          ? "bg-green-200 text-green-800"
+                          : "bg-red-200 text-red-800"
+                      }`}
+                    >
+                      {book.borrowApprovalStatus ? book.borrowApprovalStatus : "pending"}
+                    </span>
                   </p>
                   <p className="text-gray-600">ISBN: {book.isbn}</p>
-                  <p className="text-gray-600">
-                    Borrowed At:{" "}
-                    {new Date(book.borrowedAt).toLocaleDateString()}
+              {    
+              book.borrowApprovalStatus!=="rejected" &&
+                    <>
+              <p className="text-gray-600">
+                    Borrowed At: {new Date(book.borrowedAt).toLocaleDateString()}
                   </p>
                   <p className="text-red-500">
                     Due Date: {new Date(book.dueDate).toLocaleDateString()}
                   </p>
+                  </>
+              }
                 </div>
               </div>
             ))
@@ -177,6 +190,53 @@ const Profile = () => {
             <p className="text-gray-600">No borrowed books at the moment.</p>
           )}
         </div>
+      </div>
+
+      {/* Order Details Section */}
+      <div className="bg-white shadow-lg rounded-lg p-6 mt-8">
+        <h2 className="text-2xl font-semibold mb-6">Order Details</h2>
+        {orderDetails && orderDetails.length > 0 ? (
+          orderDetails.map((order) => (
+            <div key={order._id} className="mb-8">
+              <div className="border-b pb-4 mb-4">
+                <h3 className="text-xl font-semibold">Order #{order._id.slice(17)}</h3>
+                <p className="text-gray-600">Total Amount: Rs. {order.totalAmount}</p>
+                <p className="text-gray-600">Payment Method: {order.paymentMethod}</p>
+                <p className="text-gray-600">Payment Status: {order.paymentStatus}</p>
+              </div>
+              <div className="flex justify-between items-start mb-4">
+                <div>
+                  <p className="text-gray-600 font-semibold">Shipping Details:</p>
+                  <p>Name: {order.shippingDetails.name}</p>
+                  <p>Email: {order.shippingDetails.email}</p>
+                  <p>Phone: {order.shippingDetails.phone}</p>
+                  <p>Address: {order.shippingDetails.address.street}, {order.shippingDetails.address.city}</p>
+                </div>
+                <div>
+                  <p className="text-gray-600 font-semibold">Order Status:</p>
+                  <span className="text-gray-600">{order.status}</span>
+                </div>
+              </div>
+              <div>
+                <h4 className="text-lg font-semibold">Books in this Order:</h4>
+                {order.books.map((book, index) => (
+                  <div key={index} className="flex justify-between mb-4">
+                    <div>
+                      <h5 className="text-gray-600">{book.book}</h5>
+                      <p className="text-gray-600">Quantity: {book.quantity}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-600">Price: Rs. {book.price}</p>
+                      <p className="text-gray-600">Total: Rs. {book.total}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))
+        ) : (
+          <p className="text-gray-600">No orders placed yet.</p>
+        )}
       </div>
 
       {/* Fines Section */}
@@ -209,11 +269,10 @@ const Profile = () => {
                   <p className="text-gray-600">Author: {book.author}</p>
                   <p className="text-gray-600">Genre: {book.genre}</p>
                   <p className="text-gray-600">
-                    Suggested For: {book.suggestedFor}{" "}
-                    {/* Adjust based on your data */}
+                    Suggested For: {book.suggestedFor}
                   </p>
                   <button
-                    onClick={() => console.log("HEllo world")} // Example action for clicking on a recommendation
+                    onClick={() => console.log("View Details")}
                     className="bg-blue-500 text-white px-4 py-2 rounded-md mt-2 hover:bg-blue-600 transition duration-300"
                   >
                     View Details
@@ -222,9 +281,7 @@ const Profile = () => {
               </div>
             ))
           ) : (
-            <p className="text-gray-600">
-              No recommendations available at the moment.
-            </p>
+            <p className="text-gray-600">No recommendations available at the moment.</p>
           )}
         </div>
       </div>
